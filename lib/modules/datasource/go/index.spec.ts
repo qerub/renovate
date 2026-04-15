@@ -108,6 +108,18 @@ describe('modules/datasource/go/index', () => {
       expect(res).toBeNull();
     });
 
+    it('returns null when go-get request fails with HTTP error', async () => {
+      httpMock
+        .scope('https://custom.com/')
+        .get('/lib/module?go-get=1')
+        .reply(403);
+      const res = await datasource.getDigest(
+        { packageName: 'custom.com/lib/module' },
+        undefined,
+      );
+      expect(res).toBeNull();
+    });
+
     it('supports gitlab digest', async () => {
       httpMock
         .scope('https://gitlab.com/')
