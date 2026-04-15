@@ -50,7 +50,7 @@ export class GoDatasource extends Datasource {
 
   // Pseudo versions https://go.dev/ref/mod#pseudo-versions
   static readonly pversionRegexp = regEx(
-    /v\d+\.\d+\.\d+-(?:\w+\.)?(?:0\.)?\d{14}-(?<digest>[a-f0-9]{12})/,
+    /v\d+\.\d+\.\d+-(?:\w+\.)?(?:0\.)?\d{14}-(?<digest>[a-f0-9]{12})/, 
   );
 
   private _getReleases(
@@ -92,7 +92,16 @@ export class GoDatasource extends Datasource {
       return null;
     }
 
-    const source = await BaseGoDatasource.getDatasource(packageName);
+    let source;
+    try {
+      source = await BaseGoDatasource.getDatasource(packageName);
+    } catch (err) {
+      logger.debug(
+        { err, packageName },
+        'Failed to determine datasource for digest lookup',
+      );
+      return null;
+    }
     if (!source) {
       return null;
     }
