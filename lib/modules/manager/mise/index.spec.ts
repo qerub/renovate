@@ -24,6 +24,7 @@ describe('modules/manager/mise/index', () => {
       ${'.config/mise/mise.toml'}              | ${true}
       ${'.config/mise/mise.local.toml'}        | ${true}
       ${'.config/mise/mise.dev.toml'}          | ${true}
+      ${'.config/mise/conf.d/test.toml'}       | ${true}
       ${'.rtx.toml'}                           | ${true}
       ${'.rtx.local.toml'}                     | ${true}
       ${'.rtx.production.toml'}                | ${true}
