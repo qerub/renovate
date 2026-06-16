@@ -2,7 +2,7 @@ import { fs } from '~test/util.ts';
 import { GlobalConfig } from '../config/global.ts';
 import { findMiseConfig, findMiseCwd } from './mise-config.ts';
 
-vi.mock('../util/fs', async (importOriginal) => {
+vi.mock('../util/fs/index.ts', async (importOriginal) => {
   const orig = await importOriginal<typeof import('./fs/index.ts')>();
   return {
     ...orig,
@@ -29,9 +29,7 @@ describe('util/mise-config', () => {
     });
 
     it('should find .config/mise/config.toml walking up', async () => {
-      fs.findUpLocal.mockResolvedValueOnce(
-        'nested/.config/mise/config.toml',
-      );
+      fs.findUpLocal.mockResolvedValueOnce('nested/.config/mise/config.toml');
 
       const result = await findMiseConfig('nested/sub');
       expect(result).toBe('nested/.config/mise/config.toml');
@@ -63,9 +61,7 @@ describe('util/mise-config', () => {
 
     it('should return nested .config/mise for conf.d config', async () => {
       fs.findUpLocal.mockResolvedValueOnce(null);
-      fs.readLocalDirectory.mockRejectedValueOnce(
-        new Error('ENOENT'),
-      );
+      fs.readLocalDirectory.mockRejectedValueOnce(new Error('ENOENT'));
       fs.readLocalDirectory.mockResolvedValueOnce(['node.toml']);
 
       const result = await findMiseCwd('nested/sub');

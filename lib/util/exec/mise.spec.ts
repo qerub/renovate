@@ -3,9 +3,9 @@ import upath from 'upath';
 import { mockExecAll } from '~test/exec-util.ts';
 import { partial } from '~test/util.ts';
 import { GlobalConfig } from '../../config/global.ts';
+import * as miseConfig from '../mise-config.ts';
 import { findMiseCwd, getMiseEnvs, isMise } from './mise.ts';
 import type { RawExecOptions } from './types.ts';
-import * as miseConfig from '../mise-config.ts';
 
 vi.mock('../mise-config.ts');
 
@@ -28,19 +28,16 @@ describe('util/exec/mise', () => {
     });
 
     it.each`
-      dir                         | miseLocation           | expected
+      dir                         | miseLocation             | expected
       ${'nested/other/directory'} | ${'nested/.config/mise'} | ${'nested/.config/mise'}
-      ${'nested'}                 | ${'nested/mise'}       | ${'nested/mise'}
-      ${'other/directory'}        | ${'.config/mise'}      | ${'.config/mise'}
-      ${''}                       | ${''}                  | ${''}
-    `(
-      '("$dir") === $expected',
-      async ({ dir, miseLocation, expected }) => {
-        const cwd = upath.join(localDir, dir);
-        vi.mocked(miseConfig.findMiseCwd).mockResolvedValueOnce(miseLocation);
-        expect(await findMiseCwd(cwd)).toBe(upath.join(localDir, expected));
-      },
-    );
+      ${'nested'}                 | ${'nested/mise'}         | ${'nested/mise'}
+      ${'other/directory'}        | ${'.config/mise'}        | ${'.config/mise'}
+      ${''}                       | ${''}                    | ${''}
+    `('("$dir") === $expected', async ({ dir, miseLocation, expected }) => {
+      const cwd = upath.join(localDir, dir);
+      vi.mocked(miseConfig.findMiseCwd).mockResolvedValueOnce(miseLocation);
+      expect(await findMiseCwd(cwd)).toBe(upath.join(localDir, expected));
+    });
 
     it('should return null when mise cwd is not found', async () => {
       GlobalConfig.set({ localDir });
