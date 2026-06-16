@@ -309,6 +309,19 @@ Renovate supports three possible ways to access those tools:
 - `global`: Uses pre-installed tools, e.g. `npm` installed via `npm install -g npm`.
 - `install` (default): Downloads and installs tools at runtime if running in a [Containerbase](https://github.com/containerbase/base) environment, otherwise falls back to `global`
 - `hermit`: Uses the [Hermit](https://github.com/cashapp/hermit) tool installation approach.
+- `mise`: Uses the [mise](https://mise.jdx.dev/) project environment when a supported mise configuration is found.
+
+When using `binarySource=mise`, Renovate looks for mise configuration in these standard locations while walking up from the working directory:
+
+- `mise.toml`
+- `mise/config.toml`
+- `.mise/config.toml`
+- `.config/mise.toml`
+- `.config/mise/config.toml`
+- `.config/mise/conf.d/*.toml`
+
+If no mise configuration is found for a repository, Renovate falls back to regular execution without mise environment injection.
+Renovate also ignores `constraints` and other tool constraints when `binarySource=mise`, delegating tool version selection to mise itself.
 
 If you are running Renovate in an environment where runtime download and install of tools is not possible then you should use the "full" image.
 
